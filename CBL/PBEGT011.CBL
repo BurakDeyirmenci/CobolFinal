@@ -64,7 +64,7 @@
               WHEN WS-FUNC-CLOS
                  PERFORM H999-PROGRAM-EXIT
               WHEN OTHER
-                 DISPLAY 'INVALID FUNCTION: ' WS-FUNCTION
+                 MOVE 'INVALID FUNCTION' TO WS-SUB-DESC
               END-EVALUATE.
               GOBACK.
        0000-END. EXIT.
@@ -72,9 +72,9 @@
        H100-OPEN-FILES.
            OPEN I-O    IDX-FILE.
            IF NOT IDX-FILE-SUCCESS
-           DISPLAY 'UNABLE TO OPEN IDXFILE: ' ST-IDX
-           MOVE ST-IDX TO RETURN-CODE
-           PERFORM H999-PROGRAM-EXIT
+              MOVE ST-IDX TO WS-SUB-RC
+              MOVE 'FILE CANNOT BE OPENED' to WS-SUB-DESC
+              PERFORM H999-PROGRAM-EXIT
            END-IF.
            GOBACK.
        H100-END. EXIT.
@@ -148,13 +148,7 @@
        H500-DELETE-RECORD.
            COMPUTE IDX-ID = WS-SUB-ID
            COMPUTE IDX-DVZ = WS-SUB-DVZ
-           READ IDX-FILE KEY IDX-KEY
-             INVALID KEY
-                 MOVE 23 TO WS-SUB-RC
-                 MOVE 'RECORD NOT FOUND' to WS-SUB-DESC
-                 GOBACK
-             NOT INVALID KEY CONTINUE.
-             DELETE IDX-FILE RECORD
+           DELETE IDX-FILE RECORD
                INVALID KEY
                  MOVE 23 TO WS-SUB-RC
                  MOVE 'RECORD NOT FOUND' to WS-SUB-DESC
